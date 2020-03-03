@@ -17,8 +17,8 @@ import java.util.Random;
  */
 public class VerifyServlet extends HttpServlet {
 
-    private static final long serialVersionUID = -5051097528828603895L;
 
+    private static final long serialVersionUID = -8550203760954106336L;
     /**
      * 验证码图片的宽度。
      */

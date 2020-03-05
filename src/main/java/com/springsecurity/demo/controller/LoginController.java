@@ -9,6 +9,7 @@ import com.springsecurity.demo.service.SysUserRoleService;
 import com.springsecurity.demo.service.SysUserService;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,12 +51,17 @@ public class LoginController {
         return "login.html";
     }
 
-    @RequestMapping("/login/error")
-    @ResponseBody
-    public Msg<?> loginError(HttpServletRequest request) {
-        AuthenticationException exception = (AuthenticationException) request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
 
-        return new Msg<>(false, exception.getMessage(), exception.toString());
+    @RequestMapping("/login/error")
+    public void loginError(HttpServletRequest request, HttpServletResponse response) {
+        response.setContentType("text/html;charset=utf-8");
+        AuthenticationException exception =
+                (AuthenticationException)request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
+        try {
+            response.getWriter().write(exception.toString());
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @GetMapping("/register")
@@ -103,30 +111,25 @@ public class LoginController {
         return new Msg<>(true, null, map);
     }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping("/login/invalid")
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public String printAdmin() {
-        return "如果你看见这句话，说明你有ROLE_ADMIN角色";
+    public String invalid() {
+        return "Session 已过期，请重新登录";
     }
 
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/admin")
     @ResponseBody
-    public String printUser() {
-        return "如果你看见这句话，说明你有ROLE_USER角色";
+    @PreAuthorize("hasPermission('/admin','r')")
+    public String printAdminR() {
+        return "如果你看见这句话，说明你访问/admin路径具有r权限";
     }
 
-    @GetMapping("/teacher")
-    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @RequestMapping("/admin/c")
     @ResponseBody
-    public String printTeacher() {
-        return "如果你看见这句话，说明你有ROLE_TEACHER角色";
+    @PreAuthorize("hasPermission('/admin','c')")
+    public String printAdminC() {
+        return "如果你看见这句话，说明你访问/admin路径具有c权限";
     }
 
-    @GetMapping("/adminOrTeacher")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_TEACHER')")
-    @ResponseBody
-    public String printAdminAndTeacher() {
-        return "如果你看见这句话，说明你有ROLE_ADMIN或ROLE_TEACHER和角色";}
 }

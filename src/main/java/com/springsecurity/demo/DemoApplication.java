@@ -2,6 +2,7 @@ package com.springsecurity.demo;
 
 import com.springsecurity.demo.servlet.VerifyServlet;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;

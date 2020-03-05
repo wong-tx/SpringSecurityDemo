@@ -2,14 +2,21 @@ server:
   port: 8080
   servlet:
     context-path: /
+    # session è¿‡æœŸæ—¶é—´ï¼Œå•ä½ï¼šç§’
+    session:
+      timeout: 60
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2B8
     username: root
     password: 906913
     type: com.alibaba.druid.pool.DruidDataSource
-# ¿ªÆôMybatisÏÂ»®ÏßÃüÃû×ªÍÕ·åÃüÃû
+  main:
+    allow-bean-definition-overriding: true
+
+
+# å¼€å¯Mybatisä¸‹åˆ’çº¿å‘½åè½¬é©¼å³°å‘½å
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

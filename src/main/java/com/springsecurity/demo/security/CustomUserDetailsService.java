@@ -37,9 +37,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        SysUser user = userService.selectByName(s);
+        SysUser user = userService.selectByName(name);
 
         // 判断用户是否存在
         if (user == null) {
